@@ -1,0 +1,223 @@
+DROP DATABASE   IF     EXISTS managment_inchirieri_masini;
+CREATE DATABASE IF NOT EXISTS managment_inchirieri_masini;
+USE managment_inchirieri_masini;
+Create table if not exists Car
+
+(id_car int unique auto_increment primary key,
+
+marca varchar(30),
+model varchar(30),
+
+an_productie varchar(4),
+
+nr_locuri int,
+
+culoare varchar(10),
+
+pret_per_zi int,
+
+disponibilitate varchar(20));
+
+
+
+
+Create table if not exists Damage
+(id_damage int unique auto_increment primary key,
+
+damage_tipe varchar(50),
+
+price int,
+car_id int,
+foreign key (car_id) references Car(id_car));
+
+
+
+/*Drop table if exists Clients;
+Drop table if exists Firma; 
+Drop table if exists Serviciu;
+Drop table if exists Inchiriere;
+Drop table if exists Agent_inchirieri;
+Drop table if exists Reparatii;
+drop table if exists Revizie;
+drop table if exists Damage;
+drop table if exists Mecanic;
+drop table if exists Car;*/
+Create table if not exists Agent_inchirieri
+(id_agent varchar(5) unique primary key,
+nume varchar(30),
+prenume varchar(30),
+salariu int,
+nr_inchirieri_pe_zi int,
+nr_max int);
+
+Create table if not exists Clients
+(id_client int unique auto_increment primary key,
+
+nume varchar(30),
+
+prenume varchar(30),
+
+cnp varchar(15),
+
+numar_telefon varchar(20),
+adresa varchar(50),
+id_agent varchar(5),
+foreign key (id_agent) references Agent_inchirieri(id_agent));
+
+Create table if not exists Inchiriere
+(id_inchiriere int unique auto_increment primary key,
+service_name varchar(10),
+id_agent varchar(5),
+id_car int,
+pret_serviciu int,
+data_inchiriere date,
+data_returnare date,
+nr_zile int,
+foreign key (id_agent) references Agent_inchirieri(id_agent),
+foreign key (id_car) references Car(id_car));
+
+ 
+create table if not exists Mecanic
+(id_mecanic varchar(3) unique primary key,
+nume varchar(30),
+prenume varchar(30),
+salariu int,
+id_car int,
+nr_masini_reparate int,
+foreign key (id_car) references Car(id_car));
+
+create table if not exists Reparatii
+(id_reparatii int unique auto_increment primary key,
+nume_serviciu varchar(30),
+id_mecanic varchar(3),
+id_damage int,
+id_car int,
+data_reparatiei date,
+foreign key (id_car) references Car(id_car),
+foreign key (id_mecanic) references Mecanic(id_mecanic),
+foreign key (id_damage) references Damage(id_damage));
+
+
+create table if not exists Revizie
+(id_revizie int unique auto_increment primary key,
+nume_serviciu varchar(30),
+data_ultimei_revizii date,
+data_expirarii date,
+pret int,
+id_mecanic varchar(3),
+id_car int,
+foreign key(id_mecanic) references Mecanic(id_mecanic),
+foreign key (id_car) references Car(id_car));
+
+create table if not exists Serviciu
+(id_serviciu int unique auto_increment primary key,
+tip_serviciu varchar(30),
+id_inchiriere int,
+id_reparatii int,
+id_revizie int,
+foreign key (id_inchiriere) references Inchiriere(id_inchiriere),
+foreign key (id_reparatii) references Reparatii(id_reparatii),
+foreign key (id_revizie) references Revizie(id_revizie));
+
+
+create table if not exists Firma
+(id_firma int unique primary key,
+nume varchar(30),
+incasari_pe_zi int,
+data_incasari date,
+numar_masini_detinute int,
+numar_masini_disponibile int,
+id_serviciu int,
+foreign key (id_serviciu) references Serviciu(id_serviciu));
+
+
+insert into Car(marca,model,an_productie,nr_locuri,culoare,pret_per_zi,disponibilitate)values
+('Opel','Corsa',2000,5,'rosu',100,'disponibil'),
+('Opel','Astra',2005,5,'albastru',150,'disponibilt'),
+('Dacia','Duster',2012,5,'argintiu',250,'disponipil'),
+('Dacia','Logan',2008,5,'alb',100,'disponibil'),
+('Dacia','1310',1980,5,'rosu',50,'disponibil'),
+('Chevrolet','Impala',1968,5,'negru',250,'disponibil'),
+('Chevrolet','Malibu',2010,5,'albastru',200,'disponibil'),
+('Chevrolet','Cruze',2015,5,'alb',300,'disponibil'),
+('Ford','Bronco',2014,5,'negru',200,'disponibil'),
+('Ford','Fiesta',2003,5,'alb',175,'disponibil'),
+('Smart','ForTwo',2001,2,'albastru',120,'disponibil'),
+('Skoda','Fabia',2001,5,'argintiu',150,'disponibil'),
+('Skoda','Octavia',2004,5,'negru',175,'disponibil'),
+('Toyota','RVA4',2019,5,'auriu',400,'disponibil'),
+('Toyota','Sequoia',2019,7,'rosu',450,'disponibil'),
+('Toyota','C-HR',2019,5,'albastru',350,'disponibil'),
+('Toyota','Tundra',2018,5,'rosu',400,'disponibil'),
+('Audi','Q3',2019,5,'rosu',500,'disponibil'),
+('Audi','A6',2014,5,'galben',400,'disponibil'),
+('Volkswagen','Golf',5,2002,'alb',200,'disponibil'),
+('Volkswagen','GolfPlus',7,2015,'argintiu',250,'disponibil');
+
+insert into Agent_inchirieri(id_agent,nume,prenume,salariu,nr_max,nr_inchirieri_pe_zi) values
+('00123','Marinescu','Ion',3000,10,1),
+('12345','Popescu','Ileana',3000,10,1),
+('00000','Mitrescu','George',3000,10,1);
+
+insert into Mecanic(id_mecanic,nume,prenume,salariu)values
+('001','Petrescu','Radu',3500),
+('123','Voinescu','Vasile',3500);
+
+select *
+from Car
+where culoare='rosu';
+
+
+select *
+from Car
+where an_productie>2000;
+
+select nume,prenume
+from Car
+join Agent_inchirieri
+  on Agent_inchirieri.id_car=Car.id_car
+where Car.culoare="alb";
+
+select damage_tipe,price
+from Reparatii
+join Damage
+ on Damage.car_id=Reparaatii.id_car
+where data_reparatiei="21.11.2017";
+
+select nume,sum(nr_masini_inchiriate)
+from Agent_inchirieri
+group by name;
+
+select nume,sum(nr_masini_reparate)
+from Mecanic
+group by name;
+
+select data_expirari
+from Mecanic
+join Revizie
+ on Revizie.id_mecani=Mecanic.id_mecanic
+where id_car=4;
+
+select nr_masini_inchiriate
+from Agent_inchirieri
+join Inchiriere
+ on Agent_inchirieri.id_agent=Inchiriere.id_agent
+where Inchiriere.data_inchiriere = "12.12.2016";
+
+select count(id_car)
+from Car
+where Car.disponibilitate='disponibil';
+
+select nume,prenume
+from Agent_inchirieri
+where salariu=3000;
+
+call incheiere_inchiriere(2,17);
+
+call calculare_pret(2,17);
+
+call disponibilitate(17);
+
+
+
+
