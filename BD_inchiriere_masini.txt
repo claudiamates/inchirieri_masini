@@ -1,0 +1,54 @@
+
+
+select *
+from Car
+whwre culoare="rosu";
+
+select *
+from Car
+where an_productie>2000;
+
+select nume,prenume
+from Car
+join Agent_inchirieri
+  on Agent_inchirieri.Id_car=Car.id_car
+where Car.color="alb";
+
+
+select damage_tipe,price
+from Reparatii
+join Damage
+ on Damage.car_id=Reparaatii.id_car
+where data_reparatiei="21.11.2017";
+
+select nume,sum(nr_masini_inchiriate)
+from Agent_inchirieri
+group by name;
+
+select nume,sum(nr_masini_reparate)
+from Mecanic
+group by name;
+
+select data_expirari
+from Mecanic
+join Revizie
+ on Revizie.id_mecani=Mecanic.id_mecanic
+where id_car=4;
+
+select nr_masini_inchiriate
+from Agent_inchirieri
+join Inchiriere
+ on Agent_inchirieri.id_agent=Inchiriere.id_agent
+where Inchiriere.data_inchiriere = "12.12.2016";
+
+select count(id_car)
+from Car
+where Car.disponibilitate='disponibil';
+
+select nume,prenume
+from Clients
+where Clients.adresa.mid(locate(oras)+5)="Bucuresti";
+
+select nume,prenume
+from Agent_inchirieri
+where salariu=2500;
