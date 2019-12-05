@@ -1,0 +1,59 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `nr_masini_disponibile`()
+BEGIN
+
+  select count(Car.id_car) from Car where Car.disponibilitate = 'disponibil';  
+ /* update Firma set Firma.nr_masini_disponibile = @nr where Firma.id_firma =1;*/
+  
+
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `incheiere_inchiriere`(id_ag varchar(5),id_m int)
+BEGIN
+
+
+
+
+insert into Inchiriere(service_name, id_agent,id_car, data_inchiriere, data_returnare,nr_zile)
+
+values
+('inchiriere',id_ag,id_m,current_date(),ADDDATE(current_date(),5),5);
+
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reparatie`(id_d int,id_c int, id_m varchar(3))
+BEGIN
+
+
+start transaction;
+
+
+insert into Reparatii(nume_serviciu, id_mecanic,id_damage,id_car)
+
+values
+('reparatie',id_d,id_c,id_m);
+
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `revizie`(id_c int, id_m varchar(3))
+BEGIN
+
+
+start transaction;
+
+
+insert into Revizie(nume_serviciu,id_car, id_mecanic)/*, data_ultimei_revizii, data_expirarii,pret)*/
+
+values
+('revizie',id_c,id_m);/*,current_date(), ADDDATE(current_date(),365),200);*/
+
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `adaugare_client`(nume_i varchar(30),prenume_i varchar(30),cnp_i varchar(15),telefon varchar(20),adresa_i varchar(50),id_ag varchar(5))
+BEGIN
+
+
+insert into Clients(nume,prenume,cnp,numar_telefon,adresa,id_agent)
+values
+(nume_i,prenume_i,cnp_i,telefon,adresa_i,id_ag);
+
+END
